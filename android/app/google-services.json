@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "707169866325",
+    "project_id": "react-native-yoga-ai-auth",
+    "storage_bucket": "react-native-yoga-ai-auth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707169866325:android:d87e519f9283503853fadc",
+        "android_client_info": {
+          "package_name": "com.yoga_ai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707169866325-v5rb87bmckv4b84kl3v2lqmu6tjcav8c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yoga_ai",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "707169866325-81ibscbc0dnqgjdgr3n2bmo4stdosnao.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3fmm7Yap8-AGxKwYnZ_1pHRW6vRz3ylc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707169866325-81ibscbc0dnqgjdgr3n2bmo4stdosnao.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
