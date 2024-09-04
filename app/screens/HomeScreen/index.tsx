@@ -79,7 +79,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      Alert.alert('A new message arrived!');
     });
 
     return unsubscribe;
@@ -124,7 +124,10 @@ const HomeScreen = () => {
               }}>
               <View>
                 <Text style={styles.greetingText}>
-                  Hello, {auth?.user?.name}
+                  Hello,{' '}
+                  {auth?.user?.name.length > 15
+                    ? auth?.user?.name.slice(0, 15)
+                    : auth?.user?.name}
                 </Text>
                 <Text style={styles.greeting2Text}>
                   Have a calm {'\n'} and peaceful day!

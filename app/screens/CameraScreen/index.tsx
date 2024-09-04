@@ -187,7 +187,7 @@
 // export default CameraScreen;
 
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import {millisecondsToMinutes, milliseconds} from 'date-fns';
 import {
   Camera,
@@ -200,28 +200,24 @@ import {io, Socket} from 'socket.io-client';
 import {BASE_URL, IP_ADDRESS, MOTION_AI_URL} from '../../constants';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
-  const device = useCameraDevice('back');
+  const device = useCameraDevice('front');
   const {hasPermission, requestPermission} = useCameraPermission();
   const socket = useRef(null);
   const [res, setRes] = useState(null);
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [processingData, setProcessingData] = useState<number[] | null>(null);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   let imageQueue = [];
   const navigation = useNavigation();
 
   const auth = useSelector(state => state.authSlice);
 
   useEffect(() => {
-    // socket.current = io(`ws://${IP_ADDRESS}:5000`, {
-    //   transports: ['websocket'],
-    //   reconnection: true,
-    //   reconnectionAttempts: 10,
-    //   reconnectionDelay: 2000,
-    // });
     socket.current = io('https://api.ai.techjinc.com/', {
       transports: ['websocket'],
       reconnection: true,
@@ -317,6 +313,7 @@ export default function CameraScreen() {
   };
 
   const handelProcessing = async () => {
+    setIsProcessing(true);
     // Sum the calories_burned
     let totalCaloriesBurned = processingData?.reduce((sum, item) => {
       return sum + (item || 0);
@@ -330,6 +327,7 @@ export default function CameraScreen() {
     );
 
     if (isTrue) {
+      setIsProcessing(false);
       navigation.goBack();
     }
   };
@@ -386,42 +384,60 @@ export default function CameraScreen() {
         outputOrientation="device"
       />
 
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          width: '100%',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <TouchableOpacity
-          onPress={() => {
-            setIsCameraActive(!isCameraActive);
-          }}
-          style={{
-            backgroundColor: isCameraActive ? 'green' : 'red',
-            width: 60,
-            height: 60,
-            borderRadius: 50,
-          }}
-        />
-      </View>
-
-      {res && (
+      {isProcessing ? (
         <View
           style={{
-            backgroundColor: 'red',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
             position: 'absolute',
-            top: 20,
-            left: 20,
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            borderRadius: 5,
+            zIndex: 1,
+            width: '100%',
+            height: '100%',
           }}>
-          <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
-            {res}
-          </Text>
+          <ActivityIndicator size={'large'} />
+          <Text>Processing...</Text>
         </View>
+      ) : (
+        <>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 10,
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsCameraActive(!isCameraActive);
+              }}
+              style={{
+                backgroundColor: isCameraActive ? 'green' : 'red',
+                width: 60,
+                height: 60,
+                borderRadius: 50,
+              }}
+            />
+          </View>
+
+          {res && (
+            <View
+              style={{
+                backgroundColor: 'red',
+                position: 'absolute',
+                top: 20,
+                left: 20,
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+                borderRadius: 5,
+              }}>
+              <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                {res}
+              </Text>
+            </View>
+          )}
+        </>
       )}
     </View>
   );
