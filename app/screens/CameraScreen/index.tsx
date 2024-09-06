@@ -239,7 +239,7 @@ export default function CameraScreen() {
   const cameraRef = useRef(null);
   const videoRef = useRef<VideoRef>(null);
 
-  const device = useCameraDevice('back');
+  const device = useCameraDevice('front');
   const {hasPermission, requestPermission} = useCameraPermission();
   const socket = useRef(null);
   const [res, setRes] = useState<YogaSessionProps | null>(null);
