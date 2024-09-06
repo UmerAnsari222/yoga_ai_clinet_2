@@ -56,6 +56,8 @@ import ClockImage from './clockImage.png';
 import ColorKcal from './colorKcal.png';
 import FavoriteBlackIcon from './material-symbols_favorite_black.svg';
 import FavoriteRedIcon from './material-symbols_favorite.svg';
+import PauseCircle2Icon from './pause-circle2.svg';
+import VideoCircle2Icon from './video-circle2.svg';
 
 export {
   Women1,
@@ -116,4 +118,6 @@ export {
   ColorKcal,
   FavoriteBlackIcon,
   FavoriteRedIcon,
+  PauseCircle2Icon,
+  VideoCircle2Icon,
 };

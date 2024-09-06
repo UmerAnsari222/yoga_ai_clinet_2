@@ -255,12 +255,12 @@ const ProgressScreen = () => {
         spacing: 2,
         labelWidth: 30,
         labelTextStyle: {color: 'gray'},
-        frontColor: '#F28649',
+        frontColor: '#07BDBD',
       });
 
       acc.push({
         value: kcalProgress,
-        frontColor: '#07BDBD',
+        frontColor: '#F28649',
         spacing: 3,
       });
 
@@ -337,7 +337,11 @@ const ProgressScreen = () => {
                   millisecondsToMinutes(duration) > 0 ? 'Minutes' : 'Seconds'
                 }
               />
-              <MiniTypeCard ImageIcon={ColorKcal} count={kcal} type="Kcal" />
+              <MiniTypeCard
+                ImageIcon={ColorKcal}
+                count={Number(kcal.toFixed(3))}
+                type="Kcal"
+              />
             </View>
 
             <View style={styles.chartWrapper}>
@@ -360,8 +364,6 @@ const ProgressScreen = () => {
                   yAxisThickness={0}
                   yAxisTextStyle={{color: 'gray'}}
                   noOfSections={3}
-                  maxValue={maxValue}
-                  // hideYAxisText
                 />
 
                 <View style={styles.squareNameWrapper}>

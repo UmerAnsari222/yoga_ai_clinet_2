@@ -42,7 +42,6 @@ import Video, {VideoRef} from 'react-native-video';
 
 import ImageCropPicker from 'react-native-image-crop-picker';
 import axios from 'axios';
-import {MOTION_AI_URL} from '../../constants';
 
 export default function PracticeScreen() {
   const videoRef = useRef<VideoRef>(null);

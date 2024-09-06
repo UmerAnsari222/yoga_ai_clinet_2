@@ -187,8 +187,19 @@
 // export default CameraScreen;
 
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
-import {millisecondsToMinutes, milliseconds} from 'date-fns';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
+import {
+  millisecondsToMinutes,
+  milliseconds,
+  secondsToMinutes,
+  millisecondsToSeconds,
+} from 'date-fns';
 import {
   Camera,
   useCameraDevice,
@@ -201,24 +212,57 @@ import {BASE_URL, IP_ADDRESS, MOTION_AI_URL} from '../../constants';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
+import Video, {VideoRef} from 'react-native-video';
+import {PauseCircle2Icon, VideoCircle2Icon} from '../../../assets/icons/icons';
+import {Font_BLACK, Font_SEMIBOLD} from '../../themes/typography';
+
+type YogaSessionProps = {
+  back_angle: number;
+  body_line_percentage: number;
+  body_turned_status: string;
+  calories_burned: number;
+  elapsed_time: number;
+  front_angle: number;
+  hand_body_angle: number;
+  hands_gripped_status: string;
+  yoga_progress: number;
+};
+
+type ShowResultProps = {
+  duration: string;
+  yoga: number;
+  kcal: number;
+  id: string;
+};
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
-  const device = useCameraDevice('front');
+  const videoRef = useRef<VideoRef>(null);
+
+  const device = useCameraDevice('back');
   const {hasPermission, requestPermission} = useCameraPermission();
   const socket = useRef(null);
-  const [res, setRes] = useState(null);
+  const [res, setRes] = useState<YogaSessionProps | null>(null);
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [processingData, setProcessingData] = useState<number[] | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [isVideoWatched, setIsVideoWatched] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showResult, setShowResult] = useState<ShowResultProps | null>(null);
+
   let imageQueue = [];
   const navigation = useNavigation();
 
   const auth = useSelector(state => state.authSlice);
 
   useEffect(() => {
-    socket.current = io('https://api.ai.techjinc.com/', {
+    videoRef.current?.pause();
+
+    // 'https://api.ai.techjinc.com/'
+    socket.current = io(MOTION_AI_URL, {
       transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: 10,
@@ -240,12 +284,15 @@ export default function CameraScreen() {
 
     socket.current.on('analysis_result', result => {
       console.log('Received analysis result:', result);
-      setRes(result.hands_gripped_status);
 
-      setProcessingData(prev => {
-        const newValue = Number(result.calories_burned);
-        return prev ? [...prev, newValue] : [newValue];
-      });
+      if (Object.entries(result).length !== 0) {
+        console.log('The object is not empty');
+        setRes(result);
+        setProcessingData(prev => {
+          const newValue = Number(result.calories_burned);
+          return prev ? [...prev, newValue] : [newValue];
+        });
+      }
     });
 
     return () => {
@@ -280,11 +327,14 @@ export default function CameraScreen() {
 
   useEffect(() => {
     if (!isCameraActive) {
+      videoRef.current?.pause();
       if (processingData != undefined && processingData?.length > 0) {
         setRes(null);
         console.log('Camera is not active');
-        handelProcessing();
+        // handelProcessing();
       }
+    } else {
+      videoRef.current?.resume();
     }
   }, [isCameraActive]);
 
@@ -320,6 +370,13 @@ export default function CameraScreen() {
     }, 0);
 
     console.log(totalCaloriesBurned);
+
+    if (totalCaloriesBurned) {
+      await handelMotionApi(totalCaloriesBurned);
+    }
+  };
+
+  const handelMotionApi = async (totalCaloriesBurned: number) => {
     const isTrue = await sendMotionAiDataForReport(
       String(duration),
       totalCaloriesBurned!,
@@ -328,7 +385,8 @@ export default function CameraScreen() {
 
     if (isTrue) {
       setIsProcessing(false);
-      navigation.goBack();
+      setIsCameraActive(false);
+      // navigation.goBack();
     }
   };
 
@@ -337,6 +395,8 @@ export default function CameraScreen() {
     kcal: number,
     movements: number,
   ) {
+    console.log(kcal);
+
     try {
       let sendData = {
         duration,
@@ -363,6 +423,13 @@ export default function CameraScreen() {
       console.log('DATA:', millisecondsToMinutes(data.report.duration));
       console.log('DATA:', milliseconds(data.report.duration));
 
+      setShowResult({
+        duration: data.report.duration,
+        yoga: data.report.yoga,
+        kcal: data.report.kcal,
+        id: data.id,
+      });
+
       return true;
     } catch (error) {
       console.error('CREATE REPORT ERROR:', error);
@@ -370,19 +437,204 @@ export default function CameraScreen() {
     }
   }
 
+  // Triggered when video starts loading to get the duration
+  const handleLoad = data => {
+    setVideoDuration(data.duration);
+  };
+
+  // Triggered while video is playing to get current position
+  const handleProgress = async data => {
+    setVideoProgress(data.currentTime);
+
+    // Check if the user has watched the entire video
+    if (data.currentTime >= videoDuration) {
+      setIsVideoWatched(true);
+      setIsCameraActive(false);
+      // handelProcessing();
+    }
+  };
+
+  // Triggered when video ends
+  const handleEnd = async () => {
+    setIsVideoWatched(true);
+    setIsCameraActive(false);
+    handelProcessing();
+  };
+
+  const handelResumePause = () => {
+    if (isPaused) {
+      videoRef.current?.resume();
+      setIsPaused(false);
+      setIsCameraActive(true);
+    } else {
+      videoRef.current?.pause();
+      setIsPaused(true);
+      setIsCameraActive(false);
+    }
+  };
+
   if (!hasPermission) return requestPermission();
   if (device == null) return <Text style={{color: '#000'}}>No Device</Text>;
 
   return (
     <View style={{flex: 1, position: 'relative'}}>
-      <Camera
-        ref={cameraRef}
-        style={{flex: 1}}
-        device={device}
-        isActive={true}
-        photo={true}
-        outputOrientation="device"
-      />
+      <View style={{width: '100%', position: 'relative'}}>
+        <Video
+          fullscreen={false}
+          controls={false}
+          pictureInPicture={false}
+          source={{
+            uri: 'https://yoga-ai-app.s3.amazonaws.com/uploads/85912def-0162-45b2-9e63-8589d0047077.mp4',
+          }}
+          ref={videoRef}
+          resizeMode="contain"
+          style={{
+            height: '100%',
+          }}
+          onLoad={handleLoad}
+          onProgress={handleProgress}
+          onEnd={handleEnd}
+        />
+      </View>
+      <View
+        style={{
+          backgroundColor: 'red',
+          position: 'absolute',
+          top: 20,
+          width: 400,
+          height: 200,
+          borderRadius: 20,
+          borderColor: 'red',
+          borderWidth: 4,
+          overflow: 'hidden',
+        }}>
+        <Camera
+          ref={cameraRef}
+          style={{
+            flex: 1,
+          }}
+          device={device}
+          isActive={true}
+          photo={true}
+          outputOrientation="device"
+        />
+      </View>
+
+      {showResult && (
+        <View
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 3333,
+          }}>
+          <View
+            style={{
+              backgroundColor: '#FFF',
+              height: '20%',
+              width: '60%',
+              borderRadius: 10,
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+              gap: 10,
+              justifyContent: 'space-between',
+            }}>
+            <View
+              style={{
+                gap: 10,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                }}>
+                <Text
+                  style={{fontSize: 20, color: '#000', fontFamily: Font_BLACK}}>
+                  Total Duration:
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Font_SEMIBOLD,
+                    fontSize: 20,
+                    color: '#000',
+                  }}>
+                  {millisecondsToMinutes(Number(showResult.duration))
+                    ? millisecondsToMinutes(Number(showResult.duration)) +
+                      ' minutes'
+                    : millisecondsToSeconds(Number(showResult.duration)) +
+                      ' seconds'}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                }}>
+                <Text
+                  style={{fontSize: 20, color: '#000', fontFamily: Font_BLACK}}>
+                  Calories you Burned:
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Font_SEMIBOLD,
+                    fontSize: 20,
+                    color: '#000',
+                  }}>
+                  {showResult.kcal}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                }}>
+                <Text
+                  style={{fontSize: 20, color: '#000', fontFamily: Font_BLACK}}>
+                  Movements you make:
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Font_SEMIBOLD,
+                    fontSize: 20,
+                    color: '#000',
+                  }}>
+                  {showResult.yoga}
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+              }}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: '#07BDBD',
+                    fontWeight: '900',
+                    fontFamily: Font_BLACK,
+                  }}>
+                  OK
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
 
       {isProcessing ? (
         <View
@@ -403,38 +655,143 @@ export default function CameraScreen() {
           <View
             style={{
               position: 'absolute',
-              bottom: 10,
+              bottom: 50,
               width: '100%',
               alignItems: 'center',
               justifyContent: 'center',
+              flexDirection: 'row',
+              gap: 30,
             }}>
-            <TouchableOpacity
-              onPress={() => {
-                setIsCameraActive(!isCameraActive);
-              }}
-              style={{
-                backgroundColor: isCameraActive ? 'green' : 'red',
-                width: 60,
-                height: 60,
-                borderRadius: 50,
-              }}
-            />
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsCameraActive(true);
+                  if (isCameraActive) {
+                    Alert.alert('Alert Title', 'Do you to close the session?', [
+                      {
+                        text: 'Cancel',
+                        onPress: () => {
+                          setIsCameraActive(true);
+                        },
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'OK',
+                        onPress: () => {
+                          setIsCameraActive(false);
+                          navigation.goBack();
+                        },
+                      },
+                    ]);
+                  }
+                }}
+                style={{
+                  backgroundColor: isCameraActive ? 'green' : 'red',
+                  width: 60,
+                  height: 60,
+                  borderRadius: 50,
+                }}
+              />
+            </View>
+
+            {isCameraActive && (
+              <TouchableOpacity
+                onPress={handelResumePause}
+                style={{backgroundColor: 'white', borderRadius: 50}}>
+                {isPaused ? <VideoCircle2Icon /> : <PauseCircle2Icon />}
+              </TouchableOpacity>
+            )}
+
+            {/* <TouchableOpacity
+              style={{backgroundColor: 'white', borderRadius: 50}}>
+              <PauseCircle2Icon />
+            </TouchableOpacity> */}
           </View>
 
           {res && (
             <View
               style={{
-                backgroundColor: 'red',
                 position: 'absolute',
-                top: 20,
-                left: 20,
-                paddingHorizontal: 10,
-                paddingVertical: 10,
-                borderRadius: 5,
+                top: 60,
+                right: 40,
               }}>
-              <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
-                {res}
-              </Text>
+              <View
+                style={{
+                  backgroundColor: 'red',
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}>
+                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                  Hand Gripped {res.hands_gripped_status}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  backgroundColor: 'red',
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}>
+                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                  Calories Burned: {res.calories_burned}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  backgroundColor: 'red',
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}>
+                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                  Front Angle: {res.front_angle}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  backgroundColor: 'red',
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}>
+                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                  Back Angle: {res.back_angle}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  backgroundColor: 'red',
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}>
+                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                  Body Line % : {res.body_line_percentage}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  backgroundColor: 'red',
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}>
+                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                  Body Turned Status: {res.body_turned_status}
+                </Text>
+              </View>
             </View>
           )}
         </>

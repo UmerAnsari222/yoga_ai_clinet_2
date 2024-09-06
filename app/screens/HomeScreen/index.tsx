@@ -124,10 +124,10 @@ const HomeScreen = () => {
               }}>
               <View>
                 <Text style={styles.greetingText}>
-                  Hello,{' '}
-                  {auth?.user?.name.length > 15
-                    ? auth?.user?.name.slice(0, 15)
-                    : auth?.user?.name}
+                  Hello,
+                  {auth?.user?.name.includes(' ')
+                    ? auth?.user?.name.split(' ')[0]
+                    : auth?.user?.name.slice(0, 10)}
                 </Text>
                 <Text style={styles.greeting2Text}>
                   Have a calm {'\n'} and peaceful day!
