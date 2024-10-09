@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
@@ -75,6 +76,14 @@ const FavoriteScreen = () => {
       setYogaList(data.favorites);
     }
   }, [isSuccess]);
+
+  if (isLoading) {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <View style={{flex: 1, backgroundColor: '#FFF'}}>

@@ -239,7 +239,7 @@ export default function CameraScreen() {
   const cameraRef = useRef(null);
   const videoRef = useRef<VideoRef>(null);
 
-  const device = useCameraDevice('front');
+  const device = useCameraDevice('back');
   const {hasPermission, requestPermission} = useCameraPermission();
   const socket = useRef(null);
   const [res, setRes] = useState<YogaSessionProps | null>(null);
@@ -252,6 +252,7 @@ export default function CameraScreen() {
   const [isVideoWatched, setIsVideoWatched] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [showResult, setShowResult] = useState<ShowResultProps | null>(null);
+  const [readyForPose, setReadyForPose] = useState(false);
 
   let imageQueue = [];
   const navigation = useNavigation();
@@ -285,7 +286,14 @@ export default function CameraScreen() {
     socket.current.on('analysis_result', result => {
       console.log('Received analysis result:', result);
 
+      if (result.pose_detection == false) {
+        setReadyForPose(true);
+        return;
+      }
+
       if (Object.entries(result).length !== 0) {
+        setReadyForPose(false);
+
         console.log('The object is not empty');
         setRes(result);
         setProcessingData(prev => {
@@ -320,7 +328,7 @@ export default function CameraScreen() {
       } else {
         console.log('WebSocket not connected, skipping capture.');
       }
-    }, 5000);
+    }, 1500);
 
     return () => clearInterval(intervalId);
   }, [device, isCameraActive]);
@@ -707,6 +715,28 @@ export default function CameraScreen() {
               <PauseCircle2Icon />
             </TouchableOpacity> */}
           </View>
+
+          {readyForPose && (
+            <View
+              style={{
+                position: 'absolute',
+                top: 60,
+                right: 40,
+              }}>
+              <View
+                style={{
+                  backgroundColor: 'red',
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}>
+                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                  Ready for next pose
+                </Text>
+              </View>
+            </View>
+          )}
 
           {res && (
             <View

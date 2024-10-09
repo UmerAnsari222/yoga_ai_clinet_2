@@ -178,7 +178,11 @@ export default function PracticeScreen() {
   // };
 
   if (isLoading) {
-    return <ActivityIndicator />;
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    );
   }
 
   return (

@@ -87,8 +87,14 @@ const HomeScreen = () => {
 
   if (isUserLoading || isYogaSessionLoading) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        {/* <Text>Loading...</Text> */}
+        <ActivityIndicator />
       </View>
     );
 

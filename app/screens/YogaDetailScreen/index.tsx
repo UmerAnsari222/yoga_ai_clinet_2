@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -86,8 +87,8 @@ const YogaDetailScreen = () => {
 
   if (isLoading) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator />
       </View>
     );
   }
