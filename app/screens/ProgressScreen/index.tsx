@@ -1,4 +1,11 @@
-import {View, Text, StatusBar, SafeAreaView, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  StatusBar,
+  SafeAreaView,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
   heightPercentageToDP,
@@ -282,8 +289,8 @@ const ProgressScreen = () => {
 
   if (isLoading) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator size={30} color={'#07BDBD'} />
       </View>
     );
   }

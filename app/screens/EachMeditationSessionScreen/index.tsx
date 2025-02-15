@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
@@ -20,6 +21,7 @@ import {styles} from './style';
 import YogaCard from '../../components/YogaCard';
 import {useGetAllMeditationByLevelQuery} from '../../store/services/meditation.service';
 import {useSelector} from 'react-redux';
+import {Font_SEMIBOLD} from '../../themes/typography';
 
 const EachMeditationSessionScreen = () => {
   const [meditationList, setMeditationList] = useState([]);
@@ -68,8 +70,8 @@ const EachMeditationSessionScreen = () => {
 
   if (isLoading) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator size={30} color={'#07BDBD'} />
       </View>
     );
   }
@@ -99,20 +101,32 @@ const EachMeditationSessionScreen = () => {
 
           <View style={{marginVertical: heightPercentageToDP('2')}}>
             <View style={{marginTop: heightPercentageToDP('4'), gap: 30}}>
-              {meditationList.map((meditation, i) => (
-                <YogaCard
-                  onPress={() =>
-                    navigation.navigate('MeditationDetailScreen', {
-                      id: meditation.id,
-                    })
-                  }
-                  key={i}
-                  title={meditation?.name}
-                  YogaImage={meditation?.posterUrl}
-                  duration={meditation?.duration}
-                  level={meditation?.level}
-                />
-              ))}
+              {meditationList.length > 0 ? (
+                meditationList.map((meditation, i) => (
+                  <YogaCard
+                    onPress={() =>
+                      navigation.navigate('MeditationDetailScreen', {
+                        id: meditation.id,
+                      })
+                    }
+                    key={i}
+                    title={meditation?.name}
+                    YogaImage={meditation?.posterUrl}
+                    duration={meditation?.duration}
+                    level={meditation?.level}
+                  />
+                ))
+              ) : (
+                <Text
+                  style={{
+                    color: '#000',
+                    fontSize: 18,
+                    fontFamily: Font_SEMIBOLD,
+                    textAlign: 'center',
+                  }}>
+                  Meditations not found
+                </Text>
+              )}
             </View>
           </View>
         </View>

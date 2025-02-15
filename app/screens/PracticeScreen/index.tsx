@@ -143,7 +143,7 @@ export default function PracticeScreen() {
     // navigation.navigate('CameraScreen', {video: video});
 
     // });
-    navigation.navigate('CameraScreen');
+    navigation.navigate('CameraScreen', {url: yogaSession?.videoUrl});
   };
 
   // const handelCamera = async () => {
@@ -180,7 +180,7 @@ export default function PracticeScreen() {
   if (isLoading) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ActivityIndicator />
+        <ActivityIndicator size={30} color={'#07BDBD'} />
       </View>
     );
   }

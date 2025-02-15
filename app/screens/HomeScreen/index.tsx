@@ -94,7 +94,7 @@ const HomeScreen = () => {
           justifyContent: 'center',
         }}>
         {/* <Text>Loading...</Text> */}
-        <ActivityIndicator />
+        <ActivityIndicator size={30} color={'#07BDBD'} />
       </View>
     );
 

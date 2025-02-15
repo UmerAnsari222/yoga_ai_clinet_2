@@ -16,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import CircleYogaCard from '../../components/CircleYogaCard';
 import {useSelector} from 'react-redux';
 import {useGetAllCategoryQuery} from '../../store/services/category.service';
+import {Font_SEMIBOLD} from '../../themes/typography';
 
 const YogaClassesScreen = () => {
   const navigation = useNavigation<any>();
@@ -35,7 +36,7 @@ const YogaClassesScreen = () => {
   if (isLoading) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ActivityIndicator />
+        <ActivityIndicator size={30} color={'#07BDBD'} />
       </View>
     );
   }
@@ -72,18 +73,30 @@ const YogaClassesScreen = () => {
               flexWrap: 'wrap',
               justifyContent: yogaList.length > 3 ? 'center' : 'flex-start',
             }}>
-            {yogaList?.map((yoga, i) => (
-              <CircleYogaCard
-                key={i}
-                ImageIcon={yoga.posterUrl}
-                title={yoga.name}
-                onPress={() =>
-                  navigation.navigate('EachYogaClassesScreen', {
-                    yogaClass: {name: yoga.name, id: yoga.id},
-                  })
-                }
-              />
-            ))}
+            {yogaList.length > 0 ? (
+              yogaList?.map((yoga, i) => (
+                <CircleYogaCard
+                  key={i}
+                  ImageIcon={yoga.posterUrl}
+                  title={yoga.name}
+                  onPress={() =>
+                    navigation.navigate('EachYogaClassesScreen', {
+                      yogaClass: {name: yoga.name, id: yoga.id},
+                    })
+                  }
+                />
+              ))
+            ) : (
+              <Text
+                style={{
+                  color: '#000',
+                  fontSize: 18,
+                  fontFamily: Font_SEMIBOLD,
+                  textAlign: 'center',
+                }}>
+                Yoga class not found
+              </Text>
+            )}
 
             {/* <FlatList
               data={yogaList}

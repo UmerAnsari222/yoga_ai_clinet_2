@@ -4,6 +4,7 @@ import {
   StatusBar,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
@@ -19,6 +20,7 @@ import {styles} from './style';
 import YogaCard from '../../components/YogaCard';
 import {useGetAllYogaSessionByCategoryQuery} from '../../store/services/category.service';
 import {useSelector} from 'react-redux';
+import {Font_SEMIBOLD} from '../../themes/typography';
 
 const EachYogaClassesScreen = () => {
   const [yogaList, setYogaList] = useState([]);
@@ -70,8 +72,8 @@ const EachYogaClassesScreen = () => {
 
   if (isLoading) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator size={30} color={'#07BDBD'} />
       </View>
     );
   }
@@ -100,18 +102,30 @@ const EachYogaClassesScreen = () => {
 
           <View style={{marginVertical: heightPercentageToDP('2')}}>
             <View style={{marginTop: heightPercentageToDP('4'), gap: 30}}>
-              {yogaList.map((yoga, i) => (
-                <YogaCard
-                  level={yoga.level}
-                  key={i}
-                  title={yoga?.name}
-                  YogaImage={yoga?.posterUrl}
-                  duration={yoga?.duration}
-                  onPress={() =>
-                    navigation.navigate('YogaDetailScreen', {id: yoga.id})
-                  }
-                />
-              ))}
+              {yogaList.length > 0 ? (
+                yogaList.map((yoga, i) => (
+                  <YogaCard
+                    level={yoga.level}
+                    key={i}
+                    title={yoga?.name}
+                    YogaImage={yoga?.posterUrl}
+                    duration={yoga?.duration}
+                    onPress={() =>
+                      navigation.navigate('YogaDetailScreen', {id: yoga.id})
+                    }
+                  />
+                ))
+              ) : (
+                <Text
+                  style={{
+                    color: '#000',
+                    fontSize: 18,
+                    fontFamily: Font_SEMIBOLD,
+                    textAlign: 'center',
+                  }}>
+                  Yoga class not found
+                </Text>
+              )}
             </View>
           </View>
         </View>

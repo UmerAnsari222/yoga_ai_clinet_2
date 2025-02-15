@@ -88,7 +88,7 @@ const YogaDetailScreen = () => {
   if (isLoading) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ActivityIndicator />
+        <ActivityIndicator size={30} color={'#07BDBD'} />
       </View>
     );
   }

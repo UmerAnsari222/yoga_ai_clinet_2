@@ -16,6 +16,7 @@ import axios from 'axios';
 import {BASE_URL} from '../../constants';
 import {useSelector} from 'react-redux';
 import {formatDistanceToNow} from 'date-fns';
+import {Font_SEMIBOLD} from '../../themes/typography';
 
 type Reminder = {
   createdAt: string;
@@ -68,7 +69,7 @@ export default function NotificationScreen() {
 
       {isLoading ? (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <ActivityIndicator size={'large'} color={'red'} />
+          <ActivityIndicator size={30} color={'#07BDBD'} />
         </View>
       ) : (
         <ScrollView
@@ -95,32 +96,46 @@ export default function NotificationScreen() {
               }}>
               {/* <Text style={styles.dayHHeading}>Today</Text> */}
 
-              {notifications.map(notification => (
-                <View key={notification.id} style={styles.notificationWrapper}>
+              {notifications.length > 0 ? (
+                notifications.map(notification => (
                   <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <Text style={styles.notificationTitle}>
-                      {notification.title.length > 20
-                        ? notification.title.slice(0, 20) + '...'
-                        : notification.title}
-                    </Text>
-                    <Text style={styles.notificationTime}>
-                      {formatDistanceToNow(new Date(notification.createdAt), {
-                        addSuffix: true,
-                      })}
-                    </Text>
+                    key={notification.id}
+                    style={styles.notificationWrapper}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Text style={styles.notificationTitle}>
+                        {notification.title.length > 20
+                          ? notification.title.slice(0, 20) + '...'
+                          : notification.title}
+                      </Text>
+                      <Text style={styles.notificationTime}>
+                        {formatDistanceToNow(new Date(notification.createdAt), {
+                          addSuffix: true,
+                        })}
+                      </Text>
+                    </View>
+                    <View style={{marginTop: heightPercentageToDP('1')}}>
+                      <Text style={styles.notificationDescription}>
+                        {notification.description}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={{marginTop: heightPercentageToDP('1')}}>
-                    <Text style={styles.notificationDescription}>
-                      {notification.description}
-                    </Text>
-                  </View>
-                </View>
-              ))}
+                ))
+              ) : (
+                <Text
+                  style={{
+                    color: '#000',
+                    fontSize: 18,
+                    fontFamily: Font_SEMIBOLD,
+                    textAlign: 'center',
+                  }}>
+                  Not found any notifications
+                </Text>
+              )}
 
               {/* <View style={styles.notificationWrapper}>
                 <View

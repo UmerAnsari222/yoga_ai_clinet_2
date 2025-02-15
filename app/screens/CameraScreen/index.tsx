@@ -1,191 +1,3 @@
-// import {
-//   Image,
-//   SafeAreaView,
-//   ScrollView,
-//   StatusBar,
-//   Text,
-//   TouchableOpacity,
-//   View,
-// } from 'react-native';
-// import React, {useRef, useState} from 'react';
-// import {useNavigation, useRoute} from '@react-navigation/native';
-// import {Font_SEMIBOLD} from '../../themes/typography';
-// import PrimaryButton from '../../components/PrimaryButton';
-// import {
-//   heightPercentageToDP,
-//   widthPercentageToDP,
-// } from 'react-native-responsive-screen';
-// import Video, {VideoRef} from 'react-native-video';
-// import {ArrowRight} from '../../../assets/icons/icons';
-// import {styles} from './style';
-// import {BASE_URL, MOTION_AI_URL} from '../../constants';
-// import {useSelector} from 'react-redux';
-
-// const CameraScreen = () => {
-//   const navigation = useNavigation();
-//   const videoRef = useRef<VideoRef>(null);
-//   const {video} = useRoute().params;
-
-//   const auth = useSelector(state => state.authSlice);
-
-//   const [videoUrl, setVideoUrl] = useState(video.path);
-
-//   console.log(video);
-
-//   async function handelMotionApi() {
-//     const formData = new FormData();
-//     formData.append('video', {
-//       uri: video.path,
-//       type: video.mime,
-//       name: 'video.mp4',
-//     });
-
-//     console.log(formData);
-
-//     try {
-//       const res = await fetch(`${MOTION_AI_URL}/analyze_yoga`, {
-//         method: 'POST',
-//         body: formData,
-//         // headers: {
-//         //   'Content-Type': 'multipart/form-data',
-//         // },
-//       });
-
-//       if (!res.ok) {
-//         throw new Error('Network response was not ok ' + res.statusText);
-//       }
-
-//       const data = await res.json();
-
-//       let filteredData = data.filter(item => Object.keys(item).length !== 0);
-
-//       console.log('RESPONSE', filteredData);
-//       console.log('RESPONSE', data);
-
-//       // Sum the calories_burned
-//       let totalCaloriesBurned = filteredData.reduce((sum, item) => {
-//         return sum + (item.calories_burned || 0);
-//       }, 0);
-
-//       console.log(totalCaloriesBurned);
-
-//       let removeDuplicateData = removeDuplicates(filteredData);
-
-//       if (removeDuplicateData.length > 0) {
-//         const isTrue = await sendMotionAiDataForReport(
-//           String(video.duration),
-//           totalCaloriesBurned,
-//           filteredData.length,
-//         );
-
-//         if (isTrue) {
-//           navigation.navigate('FeedbackScreen', {data: removeDuplicateData});
-//         }
-//       }
-//     } catch (error) {
-//       console.error('Error:', error);
-//     }
-//   }
-
-//   function removeDuplicates(data) {
-//     const seen = new Set();
-//     const uniqueData = [];
-
-//     data.forEach(item => {
-//       const itemString = JSON.stringify(item);
-//       if (!seen.has(itemString)) {
-//         seen.add(itemString);
-//         uniqueData.push(item);
-//       }
-//     });
-
-//     return uniqueData;
-//   }
-
-//   return (
-//     <View style={{flex: 1, backgroundColor: '#FFF'}}>
-//       <StatusBar translucent={false} barStyle={'dark-content'} />
-//       <SafeAreaView />
-
-//       <ScrollView
-//         contentContainerStyle={{
-//           paddingVertical: heightPercentageToDP('4'),
-//           paddingHorizontal: heightPercentageToDP('3'),
-//           flexGrow: 1,
-//           justifyContent: 'space-between',
-//           backgroundColor: '#fff',
-//         }}
-//         automaticallyAdjustKeyboardInsets={true}
-//         showsVerticalScrollIndicator={false}>
-//         <View>
-//           <View
-//             style={{
-//               flexDirection: 'row',
-//               alignItems: 'center',
-//               justifyContent: 'space-between',
-//             }}>
-//             <TouchableOpacity
-//               style={{flexDirection: 'row', alignItems: 'center', gap: 5}}
-//               onPress={() => navigation.goBack()}>
-//               <ArrowRight />
-//               <Text style={styles.backText}>Get Feedback</Text>
-//             </TouchableOpacity>
-//           </View>
-
-//           <View style={{marginTop: heightPercentageToDP('3')}}>
-//             <View
-//               style={{
-//                 flexDirection: 'row',
-//                 alignItems: 'center',
-//                 justifyContent: 'space-between',
-//                 gap: widthPercentageToDP('5'),
-//               }}>
-//               <View style={{flex: 1}}>
-//                 <Video
-//                   fullscreen={true}
-//                   controls={true}
-//                   pictureInPicture={true}
-//                   source={{uri: videoUrl}}
-//                   ref={videoRef}
-//                   resizeMode="contain"
-//                   style={{
-//                     height: 560,
-//                     borderRadius: 20,
-//                   }}
-//                 />
-//               </View>
-//             </View>
-//           </View>
-//         </View>
-
-//         <View
-//           style={{
-//             paddingHorizontal: widthPercentageToDP('4'),
-//             marginBottom: 40,
-//           }}>
-//           <PrimaryButton
-//             style={{height: 74}}
-//             onPress={handelMotionApi}
-//             // onPress={() => navigation.navigate('CameraScreen')}
-//           >
-//             <Text
-//               style={{
-//                 fontSize: 24,
-//                 fontWeight: '600',
-//                 lineHeight: 33,
-//                 fontFamily: Font_SEMIBOLD,
-//               }}>
-//               Get Feedback
-//             </Text>
-//           </PrimaryButton>
-//         </View>
-//       </ScrollView>
-//     </View>
-//   );
-// };
-
-// export default CameraScreen;
-
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -210,8 +22,11 @@ import ImageResizer from 'react-native-image-resizer';
 import {io, Socket} from 'socket.io-client';
 import {BASE_URL, IP_ADDRESS, MOTION_AI_URL} from '../../constants';
 import {useSelector} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
-import {widthPercentageToDP} from 'react-native-responsive-screen';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
 import Video, {VideoRef} from 'react-native-video';
 import {PauseCircle2Icon, VideoCircle2Icon} from '../../../assets/icons/icons';
 import {Font_BLACK, Font_SEMIBOLD} from '../../themes/typography';
@@ -239,7 +54,7 @@ export default function CameraScreen() {
   const cameraRef = useRef(null);
   const videoRef = useRef<VideoRef>(null);
 
-  const device = useCameraDevice('back');
+  const device = useCameraDevice('front');
   const {hasPermission, requestPermission} = useCameraPermission();
   const socket = useRef(null);
   const [res, setRes] = useState<YogaSessionProps | null>(null);
@@ -253,6 +68,11 @@ export default function CameraScreen() {
   const [isPaused, setIsPaused] = useState(false);
   const [showResult, setShowResult] = useState<ShowResultProps | null>(null);
   const [readyForPose, setReadyForPose] = useState(false);
+
+  const route = useRoute();
+  const {url} = route.params;
+
+  console.log(url);
 
   let imageQueue = [];
   const navigation = useNavigation();
@@ -328,7 +148,7 @@ export default function CameraScreen() {
       } else {
         console.log('WebSocket not connected, skipping capture.');
       }
-    }, 1500);
+    }, 1000);
 
     return () => clearInterval(intervalId);
   }, [device, isCameraActive]);
@@ -486,46 +306,47 @@ export default function CameraScreen() {
 
   return (
     <View style={{flex: 1, position: 'relative'}}>
-      <View style={{width: '100%', position: 'relative'}}>
-        <Video
-          fullscreen={false}
-          controls={false}
-          pictureInPicture={false}
-          source={{
-            uri: 'https://yoga-ai-app.s3.amazonaws.com/uploads/85912def-0162-45b2-9e63-8589d0047077.mp4',
-          }}
-          ref={videoRef}
-          resizeMode="contain"
+      <View style={{width: '100%', flex: 1}}>
+        <View
           style={{
-            height: '100%',
-          }}
-          onLoad={handleLoad}
-          onProgress={handleProgress}
-          onEnd={handleEnd}
-        />
-      </View>
-      <View
-        style={{
-          backgroundColor: 'red',
-          position: 'absolute',
-          top: 20,
-          width: 400,
-          height: 200,
-          borderRadius: 20,
-          borderColor: 'red',
-          borderWidth: 4,
-          overflow: 'hidden',
-        }}>
-        <Camera
-          ref={cameraRef}
-          style={{
-            flex: 1,
-          }}
-          device={device}
-          isActive={true}
-          photo={true}
-          outputOrientation="device"
-        />
+            position: 'relative',
+            width: '100%',
+            // height: heightPercentageToDP('60'),
+            flexGrow: 1,
+            backgroundColor: 'white',
+          }}>
+          <Video
+            fullscreen={false}
+            controls={false}
+            pictureInPicture={false}
+            source={{uri: url}}
+            ref={videoRef}
+            resizeMode="contain"
+            style={{
+              flex: 1,
+              width: '100%',
+              height: '100%',
+            }}
+            onLoad={handleLoad}
+            onProgress={handleProgress}
+            onEnd={handleEnd}
+          />
+
+          <View
+            style={{flexGrow: 1, overflow: 'hidden', backgroundColor: 'red'}}>
+            <Camera
+              ref={cameraRef}
+              style={{
+                flex: 1,
+                width: '100%',
+              }}
+              device={device}
+              isActive={true}
+              photo={true}
+              outputOrientation="device"
+            />
+          </View>
+        </View>
       </View>
 
       {showResult && (
@@ -663,7 +484,7 @@ export default function CameraScreen() {
           <View
             style={{
               position: 'absolute',
-              bottom: 50,
+              bottom: 20,
               width: '100%',
               alignItems: 'center',
               justifyContent: 'center',
@@ -695,8 +516,8 @@ export default function CameraScreen() {
                 }}
                 style={{
                   backgroundColor: isCameraActive ? 'green' : 'red',
-                  width: 60,
-                  height: 60,
+                  width: 50,
+                  height: 50,
                   borderRadius: 50,
                 }}
               />

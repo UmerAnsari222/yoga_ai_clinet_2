@@ -24,6 +24,7 @@ import {
   useCreateFavoriteMutation,
   useGetFavoriteYogaOfUserQuery,
 } from '../../store/services/favorite.service';
+import {Font_SEMIBOLD} from '../../themes/typography';
 
 const FavoriteScreen = () => {
   const [yogaList, setYogaList] = useState([]);
@@ -80,7 +81,7 @@ const FavoriteScreen = () => {
   if (isLoading) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ActivityIndicator />
+        <ActivityIndicator size={30} color={'#07BDBD'} />
       </View>
     );
   }
@@ -113,16 +114,28 @@ const FavoriteScreen = () => {
               marginTop: heightPercentageToDP('3'),
               gap: 40,
             }}>
-            {yogaList.map((yoga, i) => (
-              <YogaCardFavorite
-                onPress={() => handleFavorite(yoga?.id)}
-                key={i}
-                title={yoga?.name}
-                YogaImage={yoga?.posterUrl}
-                duration={yoga?.duration}
-                level={yoga?.level}
-              />
-            ))}
+            {yogaList.length > 0 ? (
+              yogaList.map((yoga, i) => (
+                <YogaCardFavorite
+                  onPress={() => handleFavorite(yoga?.id)}
+                  key={i}
+                  title={yoga?.name}
+                  YogaImage={yoga?.posterUrl}
+                  duration={yoga?.duration}
+                  level={yoga?.level}
+                />
+              ))
+            ) : (
+              <Text
+                style={{
+                  color: '#000',
+                  fontSize: 18,
+                  fontFamily: Font_SEMIBOLD,
+                  textAlign: 'center',
+                }}>
+                Not found any favorites yoga or meditations
+              </Text>
+            )}
           </View>
         </View>
       </ScrollView>
