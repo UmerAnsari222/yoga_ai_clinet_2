@@ -1,4 +1,4 @@
-export const IP_ADDRESS = '192.168.229.70';
+// export const IP_ADDRESS = '192.168.229.70';
 // export const BASE_URL = `http://${IP_ADDRESS}:5500`;
 // export const BASE_URL = 'https://yogaappserver-production.up.railway.app';
 export const BASE_URL = 'https://www.api.techjinc.com';

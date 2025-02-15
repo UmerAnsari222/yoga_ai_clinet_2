@@ -10,6 +10,8 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://maven.google.com' } // Ensure Google Maven is added
+        maven { url 'https://jitpack.io' } // Add JitPack if needed
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
