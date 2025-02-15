@@ -1,6 +1,6 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../screens/SplashScreen';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import LoginScreen from '../screens/LoginScreen/indext';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -18,9 +18,9 @@ import YogaDetailScreen from '../screens/YogaDetailScreen';
 import RatingsAndReviews from '../screens/RatingsAndReviews';
 import AddReviewScreen from '../screens/AddReviewScreen';
 import PracticeScreen from '../screens/PracticeScreen';
-import {useDispatch, useSelector} from 'react-redux';
-import {getToken} from '../store/services/async-storage.service';
-import {setToken} from '../store/slice/auth.slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getToken } from '../store/services/async-storage.service';
+import { setToken } from '../store/slice/auth.slice';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import CameraScreen from '../screens/CameraScreen';
@@ -38,7 +38,7 @@ const StackNavigation = () => {
     const token = await getToken();
     console.log(token);
 
-    dispatch(setToken({token: token}));
+    dispatch(setToken({ token: token }));
   };
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const StackNavigation = () => {
 
   return (
     <Stack.Navigator
-      screenOptions={{headerShown: false}}
+      screenOptions={{ headerShown: false }}
       initialRouteName="SplashScreen">
       {!splashFinished && (
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
@@ -78,6 +78,7 @@ const StackNavigation = () => {
         <Stack.Group>
           <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="CameraScreen" component={CameraScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen
             name="ForgotPasswordScreen"

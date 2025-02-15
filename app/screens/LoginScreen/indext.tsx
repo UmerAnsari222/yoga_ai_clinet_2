@@ -7,13 +7,13 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {styles} from './style';
+import React, { useEffect, useState } from 'react';
+import { styles } from './style';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import {Font_BLACK} from '../../themes/typography';
+import { Font_BLACK } from '../../themes/typography';
 import PrimaryInput from '../../components/PrimaryInput';
 import {
   Facebook,
@@ -23,20 +23,20 @@ import {
   MessageGray,
 } from '../../../assets/icons/icons';
 import PasswordInput from '../../components/PasswordInput';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import PrimaryButton from '../../components/PrimaryButton';
 import {
   useLoginProviderMutation,
   useLoginUserMutation,
 } from '../../store/services/auth.service';
 import Toast from 'react-native-toast-message';
-import {useDispatch} from 'react-redux';
-import {setToken} from '../../store/slice/auth.slice';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../store/slice/auth.slice';
 
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {AccessToken, LoginManager, Profile} from 'react-native-fbsdk-next';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { AccessToken, LoginManager, Profile } from 'react-native-fbsdk-next';
 import auth from '@react-native-firebase/auth';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import messaging from '@react-native-firebase/messaging';
 
 const LoginScreen = () => {
@@ -87,7 +87,7 @@ const LoginScreen = () => {
 
   async function handelGoogleSignIn() {
     try {
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo);
       const data = {
@@ -120,7 +120,7 @@ const LoginScreen = () => {
 
       if (res?.data?.message === 'success') {
         // dispatch(setUser({user: res?.data?.user, token: res?.data?.token}));
-        dispatch(setToken({token: res?.data?.token}));
+        dispatch(setToken({ token: res?.data?.token }));
 
         Toast.show({
           type: 'success',
@@ -185,7 +185,7 @@ const LoginScreen = () => {
 
       if (res?.data?.message === 'success') {
         // dispatch(setUser({user: res?.data?.user, token: res?.data?.token}));
-        dispatch(setToken({token: res?.data?.token}));
+        dispatch(setToken({ token: res?.data?.token }));
 
         Toast.show({
           type: 'success',
@@ -237,7 +237,7 @@ const LoginScreen = () => {
 
       if (res?.data?.message === 'success') {
         // dispatch(setUser({user: res?.data?.user, token: res?.data?.token}));
-        dispatch(setToken({token: res?.data?.token}));
+        dispatch(setToken({ token: res?.data?.token }));
 
         Toast.show({
           type: 'success',
@@ -256,7 +256,7 @@ const LoginScreen = () => {
   }
 
   return (
-    <View style={{backgroundColor: '#FFF', flex: 1}}>
+    <View style={{ backgroundColor: '#FFF', flex: 1 }}>
       <SafeAreaView />
       <ScrollView
         contentContainerStyle={{
@@ -271,7 +271,7 @@ const LoginScreen = () => {
         <View>
           <Text style={styles.headingTitle}>Let’s get you started</Text>
           <Text style={styles.processTitle}>Proceed as you like</Text>
-          <View style={{marginTop: 20}}>
+          <View style={{ marginTop: 20 }}>
             <View style={styles.inputWrapper}>
               <MessageGray fill={'#9E9E9E'} />
               <PrimaryInput
@@ -312,7 +312,7 @@ const LoginScreen = () => {
               // onPress={() => navigation.navigate('FeedbackPreferenceScreen')}
               disable={isLoading}
               onPress={onSubmitLoginUser}
-              style={{height: 74, marginTop: 20}}>
+              style={{ height: 74, marginTop: 20 }}>
               <Text
                 style={{
                   textAlign: 'center',
@@ -373,11 +373,19 @@ const LoginScreen = () => {
 
           <TouchableOpacity
             onPress={() => navigation.navigate('RegisterScreen')}>
-            <Text style={[styles.dontHaveText, {color: '#07BDBD'}]}>
+            <Text style={[styles.dontHaveText, { color: '#07BDBD' }]}>
               Sign up
             </Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CameraScreen')}
+          style={{ alignSelf: 'center' }}
+        >
+          <Text style={[styles.dontHaveText, { color: '#07BDBD' }]}>
+            Camera Screen
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );

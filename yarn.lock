@@ -11188,6 +11188,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-image-picker@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "react-native-image-picker@npm:8.0.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: d1b90219f4ff77d700307bd3dfc7475463dfe5c1d9dc4da365535075df4baf44d0c411cf9f19a3f83226830ada18ad3728abc2b14f67c77b1f5e146ebbb0bdec
+  languageName: node
+  linkType: hard
+
 "react-native-image-resizer@npm:^1.4.5":
   version: 1.4.5
   resolution: "react-native-image-resizer@npm:1.4.5"
@@ -13719,6 +13729,7 @@ __metadata:
     react-native-fs: ^2.20.0
     react-native-gifted-charts: ^1.4.30
     react-native-image-crop-picker: ^0.41.2
+    react-native-image-picker: ^8.0.0
     react-native-image-resizer: ^1.4.5
     react-native-linear-gradient: ^2.8.3
     react-native-raw-bottom-sheet: ^3.0.0
