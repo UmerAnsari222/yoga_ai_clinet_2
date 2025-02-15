@@ -11,6 +11,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
+import com.yoga_ai.ImageBase64Package 
+
 
 class MainApplication : Application(), ReactApplication {
 
@@ -18,9 +20,9 @@ class MainApplication : Application(), ReactApplication {
           object : DefaultReactNativeHost(this) {
             override fun getPackages(): List<ReactPackage> =
                     PackageList(this).packages.apply {
-                      // Packages that cannot be autolinked yet can be added manually here, for
-                      // example:
+                      // Add ImageBase64Package to the list of packages
                       add(LinearGradientPackage())
+                      add(ImageBase64Package())  // <-- Add this line
                     }
 
             override fun getJSMainModuleName(): String = "index"
