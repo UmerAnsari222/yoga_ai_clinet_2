@@ -79,6 +79,8 @@ const StackNavigation = () => {
           <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="CameraScreen" component={CameraScreen} />
+
           <Stack.Screen
             name="ForgotPasswordScreen"
             component={ForgotPasswordScreen}
@@ -124,6 +126,8 @@ const StackNavigation = () => {
           <Stack.Screen name="AddReviewScreen" component={AddReviewScreen} />
           <Stack.Screen name="PracticeScreen" component={PracticeScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
+          <Stack.Screen name="CameraScreen" component={CameraScreen} />
+
           <Stack.Screen
             name="NotificationScreen"
             component={NotificationScreen}
