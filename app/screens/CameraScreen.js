@@ -10,7 +10,7 @@ const API_URL = "http://13.48.249.104:8080/process_pose";
 
 const CameraScreen = () => {
     const [recording, setRecording] = useState(false);
-    const [apiResponse, setApiResponse] = useState(null); 
+    const [apiResponse, setApiResponse] = useState(null);
     const cameraRef = useRef(null);
     const device = useCameraDevice("back");
     const { hasPermission, requestPermission } = useCameraPermission();
@@ -30,7 +30,7 @@ const CameraScreen = () => {
         try {
             const result = await launchImageLibrary({ mediaType: "photo" });
 
-            if (result.didCancel) return; 
+            if (result.didCancel) return;
 
             if (result.assets && result.assets.length > 0) {
                 const imagePath = result.assets[0].uri.replace("file://", "");
@@ -48,19 +48,26 @@ const CameraScreen = () => {
         }
     };
 
-    // Send frame to API
     const sendFrameToAPI = async (base64Image) => {
         try {
             console.log("Sending frame to API...");
-            const response = await axios.post(API_URL, { image: `${base64Image}` });
+
+            const response = await axios.post(API_URL, {
+                image: base64Image // Corrected string interpolation
+            });
 
             console.log("Frame sent to API successfully:", response.data);
+
             setApiResponse(response.data);
         } catch (error) {
-            setApiResponse(" Posture Couldnot be identified");
-            console.log("API Error:", error);
+            console.error("API Error:", error);
+
+            setApiResponse({
+                feedback: "Posture Could not be identified"
+            });
         }
     };
+
 
     // Capture a frame manually
     const captureFrame = async () => {
@@ -68,6 +75,12 @@ const CameraScreen = () => {
 
         try {
             console.log("Capturing Frame...");
+            setTimeout(() => {
+
+                setApiResponse({
+                    feedback: "Capturing Posture "
+                });
+            }, 3000);
 
             const photo = await cameraRef.current.takePhoto({
                 quality: 0.5,
@@ -85,6 +98,9 @@ const CameraScreen = () => {
             await sendFrameToAPI(base64Image);
         } catch (error) {
             console.error("Error capturing frame:", error);
+            setApiResponse({
+                feedback: "Error Capturing Posture "
+            })
         }
     };
 
@@ -174,7 +190,7 @@ const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: "center", alignItems: "center" },
     permissionContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
     permissionText: { fontSize: 18, color: "red" },
-    camera: { width: "100%", height: "80%",flex:1 },
+    camera: { width: "100%", height: "80%", flex: 1 },
     button: {
         backgroundColor: "blue",
         padding: 15,
@@ -204,7 +220,7 @@ const styles = StyleSheet.create({
     responseText: {
         color: "black",
         fontSize: 16,
-        fontWeight:"bold",
+        fontWeight: "bold",
         textAlign: "center",
     },
 });

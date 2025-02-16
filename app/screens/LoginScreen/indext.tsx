@@ -378,6 +378,9 @@ const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity onPress={() => navigation.navigate('CameraScreen')}>
+          <Text style={[styles.dontHaveText, {color: '#07BDBD'}]}>Camera</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );

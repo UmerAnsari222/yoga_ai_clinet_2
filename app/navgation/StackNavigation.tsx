@@ -78,6 +78,8 @@ const StackNavigation = () => {
         <Stack.Group>
           <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="CameraScreen" component={CameraScreen} />
+
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen
             name="ForgotPasswordScreen"
