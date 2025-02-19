@@ -25,6 +25,7 @@ import FavoriteScreen from '../screens/FavoriteScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import CameraScreen from '../screens/CameraScreen';
 import FeedbackScreen from '../screens/FeedbackScreen';
+import CameraScreen2 from '../screens/CameraScreen2';
 
 const Stack = createNativeStackNavigator();
 
@@ -126,7 +127,7 @@ const StackNavigation = () => {
           <Stack.Screen name="AddReviewScreen" component={AddReviewScreen} />
           <Stack.Screen name="PracticeScreen" component={PracticeScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
-          <Stack.Screen name="CameraScreen" component={CameraScreen} />
+          {/* <Stack.Screen name="CameraScreen2" component={CameraScreen2} /> */}
 
           <Stack.Screen
             name="NotificationScreen"

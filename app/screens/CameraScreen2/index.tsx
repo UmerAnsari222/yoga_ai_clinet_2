@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -19,17 +19,17 @@ import {
 } from 'react-native-vision-camera';
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
-import {io, Socket} from 'socket.io-client';
-import {BASE_URL, IP_ADDRESS, MOTION_AI_URL} from '../../constants';
-import {useSelector} from 'react-redux';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import { io, Socket } from 'socket.io-client';
+import { BASE_URL, IP_ADDRESS, MOTION_AI_URL } from '../../constants';
+import { useSelector } from 'react-redux';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import Video, {VideoRef} from 'react-native-video';
-import {PauseCircle2Icon, VideoCircle2Icon} from '../../../assets/icons/icons';
-import {Font_BLACK, Font_SEMIBOLD} from '../../themes/typography';
+import Video, { VideoRef } from 'react-native-video';
+import { PauseCircle2Icon, VideoCircle2Icon } from '../../../assets/icons/icons';
+import { Font_BLACK, Font_SEMIBOLD } from '../../themes/typography';
 
 type YogaSessionProps = {
   back_angle: number;
@@ -50,12 +50,12 @@ type ShowResultProps = {
   id: string;
 };
 
-export default function CameraScreen() {
+export default function CameraScreen2() {
   const cameraRef = useRef(null);
   const videoRef = useRef<VideoRef>(null);
 
   const device = useCameraDevice('front');
-  const {hasPermission, requestPermission} = useCameraPermission();
+  const { hasPermission, requestPermission } = useCameraPermission();
   const socket = useRef(null);
   const [res, setRes] = useState<YogaSessionProps | null>(null);
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
@@ -70,7 +70,7 @@ export default function CameraScreen() {
   const [readyForPose, setReadyForPose] = useState(false);
 
   const route = useRoute();
-  const {url} = route.params;
+  const { url } = route.params;
 
   console.log(url);
 
@@ -302,11 +302,11 @@ export default function CameraScreen() {
   };
 
   if (!hasPermission) return requestPermission();
-  if (device == null) return <Text style={{color: '#000'}}>No Device</Text>;
+  if (device == null) return <Text style={{ color: '#000' }}>No Device</Text>;
 
   return (
-    <View style={{flex: 1, position: 'relative'}}>
-      <View style={{width: '100%', flex: 1}}>
+    <View style={{ flex: 1, position: 'relative' }}>
+      <View style={{ width: '100%', flex: 1 }}>
         <View
           style={{
             position: 'relative',
@@ -319,7 +319,7 @@ export default function CameraScreen() {
             fullscreen={false}
             controls={false}
             pictureInPicture={false}
-            source={{uri: url}}
+            source={{ uri: url }}
             ref={videoRef}
             resizeMode="contain"
             style={{
@@ -333,7 +333,7 @@ export default function CameraScreen() {
           />
 
           <View
-            style={{flexGrow: 1, overflow: 'hidden', backgroundColor: 'red'}}>
+            style={{ flexGrow: 1, overflow: 'hidden', backgroundColor: 'red' }}>
             <Camera
               ref={cameraRef}
               style={{
@@ -383,7 +383,7 @@ export default function CameraScreen() {
                   width: '100%',
                 }}>
                 <Text
-                  style={{fontSize: 20, color: '#000', fontFamily: Font_BLACK}}>
+                  style={{ fontSize: 20, color: '#000', fontFamily: Font_BLACK }}>
                   Total Duration:
                 </Text>
                 <Text
@@ -394,9 +394,9 @@ export default function CameraScreen() {
                   }}>
                   {millisecondsToMinutes(Number(showResult.duration))
                     ? millisecondsToMinutes(Number(showResult.duration)) +
-                      ' minutes'
+                    ' minutes'
                     : millisecondsToSeconds(Number(showResult.duration)) +
-                      ' seconds'}
+                    ' seconds'}
                 </Text>
               </View>
 
@@ -408,7 +408,7 @@ export default function CameraScreen() {
                   width: '100%',
                 }}>
                 <Text
-                  style={{fontSize: 20, color: '#000', fontFamily: Font_BLACK}}>
+                  style={{ fontSize: 20, color: '#000', fontFamily: Font_BLACK }}>
                   Calories you Burned:
                 </Text>
                 <Text
@@ -429,7 +429,7 @@ export default function CameraScreen() {
                   width: '100%',
                 }}>
                 <Text
-                  style={{fontSize: 20, color: '#000', fontFamily: Font_BLACK}}>
+                  style={{ fontSize: 20, color: '#000', fontFamily: Font_BLACK }}>
                   Movements you make:
                 </Text>
                 <Text
@@ -526,7 +526,7 @@ export default function CameraScreen() {
             {isCameraActive && (
               <TouchableOpacity
                 onPress={handelResumePause}
-                style={{backgroundColor: 'white', borderRadius: 50}}>
+                style={{ backgroundColor: 'white', borderRadius: 50 }}>
                 {isPaused ? <VideoCircle2Icon /> : <PauseCircle2Icon />}
               </TouchableOpacity>
             )}
@@ -552,7 +552,7 @@ export default function CameraScreen() {
                   borderRadius: 5,
                   marginBottom: 5,
                 }}>
-                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 12 }}>
                   Ready for next pose
                 </Text>
               </View>
@@ -574,7 +574,7 @@ export default function CameraScreen() {
                   borderRadius: 5,
                   marginBottom: 5,
                 }}>
-                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 12 }}>
                   Hand Gripped {res.hands_gripped_status}
                 </Text>
               </View>
@@ -587,7 +587,7 @@ export default function CameraScreen() {
                   borderRadius: 5,
                   marginBottom: 5,
                 }}>
-                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 12 }}>
                   Calories Burned: {res.calories_burned}
                 </Text>
               </View>
@@ -600,7 +600,7 @@ export default function CameraScreen() {
                   borderRadius: 5,
                   marginBottom: 5,
                 }}>
-                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 12 }}>
                   Front Angle: {res.front_angle}
                 </Text>
               </View>
@@ -613,7 +613,7 @@ export default function CameraScreen() {
                   borderRadius: 5,
                   marginBottom: 5,
                 }}>
-                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 12 }}>
                   Back Angle: {res.back_angle}
                 </Text>
               </View>
@@ -626,7 +626,7 @@ export default function CameraScreen() {
                   borderRadius: 5,
                   marginBottom: 5,
                 }}>
-                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 12 }}>
                   Body Line % : {res.body_line_percentage}
                 </Text>
               </View>
@@ -639,7 +639,7 @@ export default function CameraScreen() {
                   borderRadius: 5,
                   marginBottom: 5,
                 }}>
-                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 12}}>
+                <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 12 }}>
                   Body Turned Status: {res.body_turned_status}
                 </Text>
               </View>
